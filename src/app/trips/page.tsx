@@ -1,6 +1,7 @@
 import NavBar from "@/components/NavBar";
 import AddTripModal from "@/components/AddTripModal";
 import TripCard from "@/components/TripCard";
+import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -42,7 +43,13 @@ export default async function TripsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {trips.map((trip) => (
-                <TripCard key={trip.id} trip={trip} />
+              <Link
+                key={trip.id}
+                href={`/trips/${trip.id}`}
+                className="block"
+              >
+                <TripCard trip={trip} />
+              </Link>
             ))}
           </div>
         )}
