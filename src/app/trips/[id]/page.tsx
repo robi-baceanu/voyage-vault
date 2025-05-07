@@ -1,4 +1,5 @@
 import NavBar from "@/components/NavBar";
+import PhotoSection from "@/components/PhotoSection";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -53,6 +54,8 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
               No notes for this trip.
             </p>
           )}
+
+          <PhotoSection tripId={trip.id} />
         </div>
       </main>
     </>

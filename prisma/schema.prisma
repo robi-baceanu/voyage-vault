@@ -35,4 +35,13 @@ model Trip {
   longitude Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  photos    Photo[]
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  url       String   
+  createdAt DateTime @default(now())
 }
