@@ -31,6 +31,8 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
     id: trip.id,
     title: trip.title,
     date: trip.date.toISOString(),
-    notes: trip.notes
+    notes: trip.notes,
+    latitude: trip.latitude ?? null,
+    longitude: trip.longitude ?? null,
   }} />;
 }

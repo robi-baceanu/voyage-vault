@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import NavBar from "@/components/NavBar";
 import EditTripModal from "@/components/EditTripModal";
 import PhotoSection from "@/components/PhotoSection";
+import dynamic from "next/dynamic";
 
 interface Trip {
   id: string;
   title: string;
   date: string;
   notes?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 interface Props {
@@ -25,6 +28,11 @@ export default function TripDetailClient({ trip }: Props) {
     date: new Date(trip.date),
     notes: trip.notes,
   };
+
+  const MapSection = dynamic(
+     () => import("@/components/MapSection"),
+     { ssr: false }
+  );
 
   return (
     <>
@@ -64,6 +72,13 @@ export default function TripDetailClient({ trip }: Props) {
 
           {/* Photo gallery + uploader */}
           <PhotoSection tripId={trip.id} />
+
+          {/* Map picker */}
+          <MapSection
+            tripId={trip.id}
+            initialLat={trip.latitude ?? undefined}
+            initialLng={trip.longitude ?? undefined}
+          />
         </div>
       </main>
     </>

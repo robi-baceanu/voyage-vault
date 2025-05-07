@@ -70,8 +70,8 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
 
       {/* Modal */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative z-[2001] bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Trip</h2>
             {error && <p className="mb-2 text-red-600">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
