@@ -49,12 +49,17 @@ export default function NavBar() {
 
           {/* Desktop Auth Buttons */}
           {session ? (
-            <button
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              className="hidden md:inline-block px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
-            >
-              Logout
-            </button>
+            <div className="hidden md:flex items-center space-x-4">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Logged in as <span className="font-bold">{session.user.email}</span>
+              </span>
+              <button
+                onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <div className="hidden md:flex space-x-2">
               <Link
@@ -102,7 +107,7 @@ export default function NavBar() {
           >
             <div className="absolute inset-0 bg-black opacity-30" />
             <nav
-              className="relative ml-auto w-64 h-full bg-white dark:bg-gray-800 p-4 shadow-lg"
+              className="relative ml-auto w-64 h-full bg-white dark:bg-gray-800 p-4 shadow-lg flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
@@ -176,6 +181,11 @@ export default function NavBar() {
                   </Link>
                 </li>
               </ul>
+              {session && (
+                <p className="mt-auto pt-4 text-sm text-gray-700 dark:text-gray-300">
+                  Logged in as <span className="font-bold">{session.user.email}</span>
+                </p>
+              )}
             </nav>
           </div>
         )}
