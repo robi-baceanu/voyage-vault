@@ -17,15 +17,14 @@ interface EditTripModalProps {
 export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(trip.title);
-
   const [date, setDate] = useState(trip.date.toISOString().split('T')[0]);
   const [notes, setNotes] = useState(trip.notes ?? "");
   const [error, setError] = useState<string | null>(null);
 
+  // Handle trip update
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-
     const dateObj = new Date(date);
 
     const res = await fetch(`/api/trips/${trip.id}`, {
@@ -44,31 +43,75 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
     }
   }
 
+  // Handle trip deletion
+  async function handleDelete() {
+    if (!confirm("Delete this trip?")) return;
+  
+    const res = await fetch(`/api/trips/${trip.id}`, {
+      method: "DELETE",
+    });
+  
+    if (res.ok) {
+      // Force a full page reload to /trips, avoiding any cache/stale‐data
+      window.location.href = "/trips";
+    } else {
+      // Try parse an error message, fallback gracefully
+      let msg = "Delete failed";
+      try {
+        const body = await res.json();
+        if (body.error) msg = body.error;
+      } catch {}
+      alert(msg);
+    }
+  }
+
   return (
     <>
-      {/* Pencil icon button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="absolute top-4 right-4 text-gray-600 dark:text-gray-300 p-1 hover:text-gray-800 dark:hover:text-gray-100"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      {/* Edit & Delete buttons container */}
+      <div className="absolute top-4 right-4 flex space-x-2">
+        {/* Pencil icon button */}
+        <button
+          onClick={() => setOpen(true)}
+          className="text-gray-600 dark:text-gray-300 p-1 hover:text-gray-800 dark:hover:text-gray-100"
         >
-          <path
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M17.414 2.586a2 2 0 012.828 2.828L7 18.657l-4 1 1-4L17.414 2.586z"
-          />
-        </svg>
+            />
+          </svg>
+        </button>
+        {/* Trash icon button */}
+        <button
+          onClick={handleDelete}
+          className="text-gray-600 dark:text-gray-300 p-1 hover:text-gray-800 dark:hover:text-gray-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-red-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4"
+            />
+          </svg>
+        </button>
+      </div>
 
-      </button>
-
-      {/* Modal */}
+      {/* Edit Modal */}
       {open && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative z-[2001] bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">

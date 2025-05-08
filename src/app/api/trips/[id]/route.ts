@@ -52,3 +52,31 @@ export async function PATCH(
 
   return NextResponse.json(updated);
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  // Auth
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = params;
+
+  // Ownership check
+  const trip = await prisma.trip.findUnique({
+    where: { id },
+    select: { userId: true },
+  });
+  if (!trip || trip.userId !== session.user.id) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // Delete
+  await prisma.trip.delete({ where: { id } });
+
+  // Respond
+  return NextResponse.json({ success: true });
+}
