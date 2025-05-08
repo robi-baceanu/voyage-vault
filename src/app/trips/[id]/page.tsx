@@ -6,11 +6,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-interface TripDetailPageProps {
-  params: { id: string };
-}
+export default async function TripDetailPage({ params }: { params: Promise<{ id: string }>}) {
+  const { id } = await params;
 
-export default async function TripDetailPage({ params }: TripDetailPageProps) {
   // Protect route
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -19,7 +17,7 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
 
   // Fetch the trip
   const trip = await prisma.trip.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!trip) {
