@@ -18,7 +18,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { title, date, notes, latitude, longitude } = body;
+  const { title, startDate, endDate, notes, latitude, longitude } = body;
 
   // Verify ownership
   const existing = await prisma.trip.findUnique({
@@ -31,11 +31,12 @@ export async function PATCH(
 
   // Build update object dynamically
   const data: Prisma.TripUncheckedUpdateInput = {};
-  if (title  !== undefined) data.title     = title;
-  if (date   !== undefined) data.date      = new Date(date);
-  if (notes  !== undefined) data.notes     = notes;
-  if (latitude  !== undefined) data.latitude  = latitude;
-  if (longitude !== undefined) data.longitude = longitude;
+  if (title       !== undefined) data.title     = title;
+  if (startDate   !== undefined) data.startDate = new Date(startDate);
+  if (endDate     !== undefined) data.endDate      = new Date(endDate);
+  if (notes       !== undefined) data.notes     = notes;
+  if (latitude    !== undefined) data.latitude  = latitude;
+  if (longitude   !== undefined) data.longitude = longitude;
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json(

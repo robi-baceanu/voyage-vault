@@ -13,7 +13,13 @@ export default function TripCard({ trip }: TripCardProps) {
           {trip.title}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-          {new Date(trip.date).toLocaleDateString(undefined, {
+          {new Date(trip.startDate).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}{" "}
+          -{" "}
+          {new Date(trip.endDate).toLocaleDateString(undefined, {
             year: "numeric",
             month: "short",
             day: "numeric",

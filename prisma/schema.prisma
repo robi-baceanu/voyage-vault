@@ -29,7 +29,8 @@ model Trip {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   title     String
-  date      DateTime
+  startDate DateTime
+  endDate   DateTime
   notes     String?
   latitude  Float?
   longitude Float?

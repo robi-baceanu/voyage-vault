@@ -18,7 +18,7 @@ export async function GET() {
     // Fetch trips belonging to this user, newest first
     const trips = await prisma.trip.findMany({
       where: { userId: session.user.id },
-      orderBy: { date: "desc" },
+      orderBy: { startDate: "desc" },
     });
   
     // Return the list as JSON
@@ -36,8 +36,8 @@ export async function POST(request: Request) {
     }
 
     // Parse and validate input
-    const { title, date, notes, latitude, longitude } = await request.json();
-    if (!title || !date) {
+    const { title, startDate, endDate, notes, latitude, longitude } = await request.json();
+    if (!title || !startDate || !endDate) {
         return NextResponse.json(
         { error: "Missing required fields: title and date" },
         { status: 400 }
@@ -49,7 +49,8 @@ export async function POST(request: Request) {
         data: {
         userId:    session.user.id,
         title,
-        date:      new Date(date),
+        startDate:      new Date(startDate),
+        endDate:        new Date(endDate),
         notes:     notes     ?? null,
         latitude:  latitude  ?? null,
         longitude: longitude ?? null,

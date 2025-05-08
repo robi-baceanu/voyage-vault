@@ -19,7 +19,7 @@ export default async function TripsPage() {
   // Load the user’s trips
   const trips = await prisma.trip.findMany({
     where: { userId: session.user.id },
-    orderBy: { date: "desc" },
+    orderBy: { startDate: "desc" },
   });
 
   return (

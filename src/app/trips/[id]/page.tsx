@@ -28,7 +28,8 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
   return <TripDetailClient trip={{
     id: trip.id,
     title: trip.title,
-    date: trip.date.toISOString(),
+    startDate: trip.startDate.toISOString(),
+    endDate: trip.endDate.toISOString(),
     notes: trip.notes,
     latitude: trip.latitude ?? null,
     longitude: trip.longitude ?? null,

@@ -5,19 +5,21 @@ import { useState } from "react";
 interface TripForEdit {
   id: string;
   title: string;
-  date: Date;
+  startDate: Date;
+  endDate: Date;
   notes?: string | null;
 }
 
 interface EditTripModalProps {
   trip: TripForEdit;
-  onSave: (updated: { title: string; date: Date; notes?: string }) => void;
+  onSave: (updated: { title: string; startDate: Date; endDate: Date; notes?: string }) => void;
 }
 
 export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(trip.title);
-  const [date, setDate] = useState(trip.date.toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState(trip.startDate.toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(trip.endDate.toISOString().split('T')[0]);
   const [notes, setNotes] = useState(trip.notes ?? "");
   const [error, setError] = useState<string | null>(null);
 
@@ -25,12 +27,13 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const dateObj = new Date(date);
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
 
     const res = await fetch(`/api/trips/${trip.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, date: dateObj.toISOString(), notes }),
+      body: JSON.stringify({ title, startDate: startDateObj.toISOString(), endDate: endDateObj.toISOString(), notes }),
     });
 
     if (!res.ok) {
@@ -38,7 +41,7 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
       setError(data.error || "Update failed");
     } else {
       const updated = await res.json();
-      onSave({ title: updated.title, date: new Date(updated.date), notes: updated.notes });
+      onSave({ title: updated.title, startDate: new Date(updated.startDate), endDate: new Date(updated.endDate), notes: updated.notes });
       setOpen(false);
     }
   }
@@ -129,12 +132,22 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 dark:text-gray-300 mb-1">Date</label>
+                <label className="block text-gray-700 dark:text-gray-300 mb-1">Start date</label>
                 <input
                   type="date"
                   required
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full border rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300 mb-1">End date</label>
+                <input
+                  type="date"
+                  required
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="w-full border rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 />
               </div>

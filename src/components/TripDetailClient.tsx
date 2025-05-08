@@ -9,7 +9,8 @@ import dynamic from "next/dynamic";
 interface Trip {
   id: string;
   title: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   notes?: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -25,7 +26,8 @@ export default function TripDetailClient({ trip }: Props) {
   const tripForEdit = {
     id: trip.id,
     title: trip.title,
-    date: new Date(trip.date),
+    startDate: new Date(trip.startDate),
+    endDate: new Date(trip.endDate),
     notes: trip.notes,
   };
 
@@ -44,9 +46,15 @@ export default function TripDetailClient({ trip }: Props) {
             {trip.title}
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            {new Date(trip.date).toLocaleDateString(undefined, {
+            {new Date(trip.startDate).toLocaleDateString(undefined, {
               year: "numeric",
-              month: "long",
+              month: "short",
+              day: "numeric",
+            })}{" "}
+            -{" "}
+            {new Date(trip.endDate).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "short",
               day: "numeric",
             })}
           </p>

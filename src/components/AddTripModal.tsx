@@ -5,7 +5,8 @@ import { useState } from "react";
 export default function AddTripModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +17,7 @@ export default function AddTripModal() {
     const res = await fetch("/api/trips", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, date, notes }),
+      body: JSON.stringify({ title, startDate, endDate, notes }),
     });
 
     if (res.ok) {
@@ -74,13 +75,26 @@ export default function AddTripModal() {
 
               <div>
                 <label className="block mb-1 text-gray-700 dark:text-gray-300">
-                  Date
+                  Start date
                 </label>
                 <input
                   type="date"
                   required
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full border rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">
+                  End date
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="w-full border rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 />
               </div>
