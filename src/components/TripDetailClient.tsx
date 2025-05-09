@@ -44,7 +44,7 @@ export default function TripDetailClient({ trip }: Props) {
 
       <main className="pt-20 min-h-screen bg-white dark:bg-gray-900 p-4">
         <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 relative">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             {trip.title}
           </h1>
           {/* Cover photo banner or placeholder */}
@@ -112,7 +112,7 @@ export default function TripDetailClient({ trip }: Props) {
           />
 
           {/* Photo gallery + uploader */}
-          <PhotoSection tripId={trip.id} />
+          <PhotoSection tripId={trip.id} coverPhotoId={trip.coverPhotoId ?? null} />
 
           {/* Map picker */}
           <MapSection

@@ -61,7 +61,7 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
   };
 
   return (
-    <div className="mb-4">
+    <div>
       {/* Hidden file input */}
       <input
         type="file"

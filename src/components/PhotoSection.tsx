@@ -12,9 +12,10 @@ interface Photo {
 
 interface PhotoSectionProps {
   tripId: string;
+  coverPhotoId?: string | null;
 }
 
-export default function PhotoSection({ tripId }: PhotoSectionProps) {
+export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +63,23 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
     }
   };
 
+  // Clear the trip’s cover photo
+  const handleRemoveCover = async () => {
+    if (!confirm("Remove cover photo?")) return;
+    const res = await fetch(`/api/trips/${tripId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverPhotoId: null }),
+    });
+    if (res.ok) {
+      // refresh both the cover banner and photo list
+      // router.refresh();
+      fetchPhotos();
+    } else {
+      alert("Failed to remove cover");
+    }
+  };
+
   // Open lightbox at specific index
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
@@ -77,7 +95,17 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
       </h2>
 
       {/* Uploader */}
-      <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
+      <div className="mb-4 flex justify-between items-center">
+        <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
+        {coverPhotoId && (
+          <button
+            onClick={handleRemoveCover}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded mb-2"
+          >
+            Remove cover
+          </button>
+        )}
+      </div>
 
       {/* Loading & Error States */}
       {loading && <p className="text-gray-700 dark:text-gray-300">Loading photos…</p>}
