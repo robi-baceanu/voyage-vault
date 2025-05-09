@@ -49,3 +49,15 @@ model Photo {
   createdAt DateTime @default(now())
   coverOf   Trip?    @relation("CoverPhoto")
 }
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model ChatMessage {
+  id        String       @id @default(cuid())
+  role      MessageRole  @default(USER)
+  content   String
+  createdAt DateTime     @default(now())
+}
