@@ -18,6 +18,10 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
   // Fetch the trip
   const trip = await prisma.trip.findUnique({
     where: { id },
+    include: {
+      photos: true,
+      coverPhoto: true,
+    },
   });
 
   if (!trip) {
@@ -33,5 +37,7 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
     notes: trip.notes,
     latitude: trip.latitude ?? null,
     longitude: trip.longitude ?? null,
+    coverPhotoId: trip.coverPhotoId ?? null,
+    coverPhotoUrl: trip.coverPhoto?.url ?? null
   }} />;
 }

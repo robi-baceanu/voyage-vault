@@ -49,6 +49,19 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
     setPhotos((prev) => [newPhoto, ...prev]);
   };
 
+  const handleSetCover = async (photoId: string) => {
+    const res = await fetch(`/api/trips/${tripId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverPhotoId: photoId }),
+    });
+    if (res.ok) {
+      fetchPhotos();
+    } else {
+      alert("Failed to set cover photo");
+    }
+  };
+
   // Open lightbox at specific index
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
@@ -80,6 +93,33 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
               onClick={() => openLightbox(index)}
               className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer"
             />
+            {/* Set as cover button, appears on hover */}
+            <button
+              onClick={() => handleSetCover(photo.id)}
+              className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 bg-green-600 hover:bg-green-700 text-white rounded-full p-1 transition"
+            >
+              {/* Photograph icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 15l6-6m0 0l4 4 6-6"
+                />
+              </svg>
+            </button>
             {/* Trash button, appears on hover */}
             <button
               className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 transition"

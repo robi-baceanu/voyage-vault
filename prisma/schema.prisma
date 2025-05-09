@@ -37,6 +37,8 @@ model Trip {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   photos    Photo[]
+  coverPhoto   Photo?    @relation("CoverPhoto", fields: [coverPhotoId], references: [id])
+  coverPhotoId String?   @unique
 }
 
 model Photo {
@@ -45,4 +47,5 @@ model Photo {
   trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
   url       String   
   createdAt DateTime @default(now())
+  coverOf   Trip?    @relation("CoverPhoto")
 }

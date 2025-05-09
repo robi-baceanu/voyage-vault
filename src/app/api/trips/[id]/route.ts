@@ -18,7 +18,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { title, startDate, endDate, notes, latitude, longitude } = body;
+  const { title, startDate, endDate, notes, latitude, longitude, coverPhotoId } = body;
 
   // Verify ownership
   const existing = await prisma.trip.findUnique({
@@ -37,6 +37,7 @@ export async function PATCH(
   if (notes       !== undefined) data.notes     = notes;
   if (latitude    !== undefined) data.latitude  = latitude;
   if (longitude   !== undefined) data.longitude = longitude;
+  if (coverPhotoId !== undefined) data.coverPhotoId = coverPhotoId;
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json(
