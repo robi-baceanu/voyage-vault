@@ -20,6 +20,7 @@ export default async function TripsPage() {
   const trips = await prisma.trip.findMany({
     where: { userId: session.user.id },
     orderBy: { startDate: "desc" },
+    include: { coverPhoto: true },
   });
 
   return (
@@ -41,7 +42,7 @@ export default async function TripsPage() {
             You haven’t created any trips yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {trips.map((trip) => (
               <Link
                 key={trip.id}
