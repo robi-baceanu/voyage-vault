@@ -11,9 +11,25 @@ interface Message {
 
 export default function AIChatClient() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+
+  // Load persisted chat history on mount
+  useEffect(() => {
+    fetch("/api/ai")
+      .then((res) => res.json())
+      .then((history: Message[]) => {
+        setMessages(history);
+      })
+      .catch((err) => {
+        console.error("Failed to load chat history:", err);
+      })
+      .finally(() => {
+        setLoadingHistory(false);
+      });
+  }, []);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -54,26 +70,30 @@ export default function AIChatClient() {
     <div className="flex flex-col h-[70vh] max-h-[800px] bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
       {/* Message window */}
       <div className="flex-1 p-4 overflow-y-auto space-y-4">
-        {messages.map((m, i) => (
-          <div
-            key={i}
-            className={
-              m.role === "USER" ? "text-right" : "text-left"
-            }
-          >
-            <span
-              className={
-                (m.role === "USER"
-                  ? "bg-blue-100 dark:bg-blue-900"
-                  : "bg-gray-200 dark:bg-gray-700") +
-                " inline-block p-2 rounded-md"
-              }
-            >
-              {m.content}
-            </span>
-          </div>
-        ))}
-        <div ref={endRef} />
+        {loadingHistory ? (
+          <p className="text-gray-500 dark:text-gray-400">Loading chat…</p>
+        ) : (
+          <>
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                className={m.role === "USER" ? "text-right" : "text-left"}
+              >
+                <span
+                  className={
+                    (m.role === "USER"
+                      ? "bg-blue-100 dark:bg-blue-900"
+                      : "bg-gray-200 dark:bg-gray-700") +
+                    " inline-block p-2 rounded-md"
+                  }
+                >
+                  {m.content}
+                </span>
+              </div>
+            ))}
+            <div ref={endRef} />
+          </>
+        )}
       </div>
 
       {/* Input area */}
