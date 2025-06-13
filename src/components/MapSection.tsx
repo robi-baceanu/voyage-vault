@@ -58,8 +58,10 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shouldFlyTo, setShouldFlyTo] = useState<[number, number] | null>(null);
+  const [initialMapCenter, setInitialMapCenter] = useState<[number, number]>(currentCenterRef.current);
 
-  // Load saved locations on component mount
+  // Load saved locations on component mount and set initial map position
   useEffect(() => {
     const loadLocations = async () => {
       try {
@@ -73,15 +75,31 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
             name: loc.name
           }));
           setSavedLocations(formattedLocations);
+
+          // Set initial map center based on saved locations
+          if (formattedLocations.length > 0) {
+            // Fly to the last added location (most recent)
+            const lastLocation = formattedLocations[formattedLocations.length - 1];
+            const lastLocationPos: [number, number] = [lastLocation.lat, lastLocation.lng];
+            setInitialMapCenter(lastLocationPos);
+            currentCenterRef.current = lastLocationPos;
+            // Trigger fly to the last location after map loads
+            setShouldFlyTo(lastLocationPos);
+          } else {
+            // No saved locations, use default or initial position
+            setInitialMapCenter(currentCenterRef.current);
+          }
         }
       } catch (err) {
         console.error("Failed to load locations:", err);
         setError("Failed to load saved locations");
+        // On error, use default position
+        setInitialMapCenter(currentCenterRef.current);
       }
     };
 
     loadLocations();
-  }, [tripId]);
+  }, [tripId, initialLat, initialLng]);
 
   // Reverse geocode to get location name
   const reverseGeocode = useCallback(async (lat: number, lng: number): Promise<string> => {
@@ -183,6 +201,44 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
     }
   }, [tripId]);
 
+  // Remove all locations
+  const handleRemoveAllLocations = useCallback(async () => {
+    if (savedLocations.length === 0) return;
+    
+    // Confirm action
+    const confirmed = window.confirm(`Are you sure you want to remove all ${savedLocations.length} location${savedLocations.length !== 1 ? 's' : ''}? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    setLoading(true);
+    try {
+      // Remove all locations one by one
+      const deletePromises = savedLocations.map(location => 
+        fetch(`/api/trips/${tripId}/locations/${location.id}`, {
+          method: "DELETE",
+        })
+      );
+
+      const responses = await Promise.all(deletePromises);
+      
+      // Check if all deletions were successful
+      const allSuccessful = responses.every(response => response.ok);
+      
+      if (allSuccessful) {
+        setSavedLocations([]);
+        setError(null);
+        // Clear any pending location as well
+        setPendingLocation(null);
+      } else {
+        setError("Failed to remove some locations");
+      }
+    } catch (err) {
+      console.error("Remove all locations error:", err);
+      setError("Failed to remove all locations");
+    } finally {
+      setLoading(false);
+    }
+  }, [savedLocations, tripId]);
+
   // Handle search with useCallback
   const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,6 +258,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
       const newPos: [number, number] = [parseFloat(lat), parseFloat(lon)];
       currentCenterRef.current = newPos;
       setPendingLocation({ lat: parseFloat(lat), lng: parseFloat(lon), name: display_name });
+      setShouldFlyTo(newPos);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error searching location");
     } finally {
@@ -217,6 +274,17 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
     useEffect(() => {
       mapRef.current = map;
     }, [map]);
+
+    // Handle flyTo when shouldFlyTo changes
+    useEffect(() => {
+      if (shouldFlyTo && map) {
+        // Add a small delay to ensure map is fully loaded
+        setTimeout(() => {
+          map.flyTo(shouldFlyTo, 13);
+          setShouldFlyTo(null); // Reset after flying
+        }, 100);
+      }
+    }, [shouldFlyTo, map]);
 
     useMapEvents({
       async click(e) {
@@ -281,7 +349,11 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
                 <div className="flex space-x-2 mt-2">
                   <button
                     type="button"
-                    onClick={handleSave}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleSave();
+                    }}
                     disabled={loading}
                     className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded disabled:bg-gray-400"
                   >
@@ -317,7 +389,11 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
                 <br />
                 <button
                   type="button"
-                  onClick={(e) => handleRemoveLocation(location.id, e)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRemoveLocation(location.id);
+                  }}
                   className="mt-2 px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded"
                 >
                   Remove Location
@@ -356,7 +432,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
 
       {/* Map */}
       <MapContainer 
-        center={currentCenterRef.current} 
+        center={initialMapCenter} 
         zoom={13} 
         className="h-64 w-full rounded-lg"
       >
@@ -367,12 +443,31 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
         <LocationMarker />
       </MapContainer>
 
-      {/* Saved locations counter */}
-      {savedLocations.length > 0 && (
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {savedLocations.length} location{savedLocations.length !== 1 ? 's' : ''} saved
-        </p>
-      )}
+      {/* Controls under the map */}
+      <div className="mt-2 flex justify-between items-center">
+        {/* Saved locations counter */}
+        <div>
+          {savedLocations.length > 0 && (
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {savedLocations.length} location{savedLocations.length !== 1 ? 's' : ''} saved
+            </p>
+          )}
+        </div>
+
+        {/* Remove all locations button */}
+        <button
+          type="button"
+          onClick={handleRemoveAllLocations}
+          disabled={savedLocations.length === 0 || loading}
+          className={`px-3 py-2 text-sm rounded transition-colors ${
+            savedLocations.length === 0 || loading
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-red-600 hover:bg-red-700 text-white'
+          }`}
+        >
+          {loading ? "Removing..." : "Remove All Locations"}
+        </button>
+      </div>
     </div>
   );
 }
