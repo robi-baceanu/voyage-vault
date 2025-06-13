@@ -22,7 +22,7 @@ export default function PhotoLightbox({ photos, initialIndex, onClose }: PhotoLi
   const next = () => setCurrent((i) => (i + 1) % photos.length);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+    <div className="fixed inset-0 z-2000 flex items-center justify-center bg-black bg-opacity-80">
       {/* Close button */}
       <button
         onClick={onClose}
