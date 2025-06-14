@@ -76,6 +76,7 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
         <button
           onClick={() => setOpen(true)}
           className="text-gray-600 dark:text-gray-300 p-1 hover:text-gray-800 dark:hover:text-gray-100"
+          title="Edit trip"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,20 +96,20 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
         {/* Trash icon button */}
         <button
           onClick={handleDelete}
-          className="text-gray-600 dark:text-gray-300 p-1 hover:text-gray-800 dark:hover:text-gray-100"
+          className="text-red-400 hover:text-red-300 p-1 rounded transition-colors disabled:opacity-50"
+          title="Delete trip"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-red-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4"
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor">
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4" 
             />
           </svg>
         </button>
