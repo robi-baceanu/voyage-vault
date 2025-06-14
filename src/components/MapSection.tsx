@@ -433,7 +433,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
       {/* Map */}
       <MapContainer 
         center={initialMapCenter} 
-        zoom={13} 
+        zoom={2} 
         className="h-64 w-full rounded-lg"
       >
         <TileLayer

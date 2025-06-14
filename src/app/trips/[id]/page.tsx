@@ -35,8 +35,6 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
     startDate: trip.startDate.toISOString(),
     endDate: trip.endDate.toISOString(),
     notes: trip.notes,
-    latitude: trip.latitude ?? null,
-    longitude: trip.longitude ?? null,
     coverPhotoId: trip.coverPhotoId ?? null,
     coverPhotoUrl: trip.coverPhoto?.url ?? null
   }} />;

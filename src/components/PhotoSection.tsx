@@ -8,6 +8,7 @@ interface Photo {
   id: string;
   url: string;
   createdAt: string;
+  notes?: string | null;
 }
 
 interface PhotoSectionProps {
@@ -45,11 +46,13 @@ export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps
     fetchPhotos();
   }, [tripId]);
 
-  // Callback after a successful upload
+  // Handle successful photo upload
   const handleUploadSuccess = (newPhoto: Photo) => {
-    setPhotos((prev) => [newPhoto, ...prev]);
+    // Add the new photo to the existing photos array
+    setPhotos(prevPhotos => [newPhoto, ...prevPhotos]);
   };
 
+  // Set photo as cover
   const handleSetCover = async (photoId: string) => {
     const res = await fetch(`/api/trips/${tripId}`, {
       method: "PATCH",
@@ -59,21 +62,18 @@ export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps
     if (res.ok) {
       fetchPhotos();
     } else {
-      alert("Failed to set cover photo");
+      alert("Failed to set cover");
     }
   };
 
-  // Clear the trip’s cover photo
+  // Remove photo as cover
   const handleRemoveCover = async () => {
-    if (!confirm("Remove cover photo?")) return;
     const res = await fetch(`/api/trips/${tripId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ coverPhotoId: null }),
     });
     if (res.ok) {
-      // refresh both the cover banner and photo list
-      // router.refresh();
       fetchPhotos();
     } else {
       alert("Failed to remove cover");
@@ -119,57 +119,30 @@ export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps
               src={photo.url}
               alt="Trip photo"
               onClick={() => openLightbox(index)}
-              className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer"
+              className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
             />
             {/* Set as cover button, appears on hover */}
             <button
               onClick={() => handleSetCover(photo.id)}
-              className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 bg-green-600 hover:bg-green-700 text-white rounded-full p-1 transition"
+              className="absolute top-2 left-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              {/* Photograph icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 15l6-6m0 0l4 4 6-6"
-                />
-              </svg>
+              Set as cover
             </button>
-            {/* Trash button, appears on hover */}
+            {/* Delete photo button */}
             <button
-              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 transition"
               onClick={async () => {
-                if (!confirm("Delete this photo?")) return;
-                const res = await fetch("/api/photos", {
-                  method: "DELETE",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ id: photo.id }),
-                });
-                if (res.ok) {
-                  // remove from state
-                  setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
-                } else {
-                  alert("Failed to delete");
+                if (confirm("Delete this photo?")) {
+                  const res = await fetch(`/api/photos/${photo.id}`, { method: "DELETE" });
+                  if (res.ok) fetchPhotos();
+                  else alert("Failed to delete photo");
                 }
               }}
+              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
             >
               {/* Trash icon */}  
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

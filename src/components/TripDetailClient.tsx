@@ -12,8 +12,6 @@ interface Trip {
   startDate: string;
   endDate: string;
   notes?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
   coverPhotoId?: string | null;
   coverPhotoUrl?: string | null;
 }
@@ -117,8 +115,6 @@ export default function TripDetailClient({ trip }: Props) {
           {/* Map picker */}
           <MapSection
             tripId={trip.id}
-            initialLat={trip.latitude ?? undefined}
-            initialLng={trip.longitude ?? undefined}
           />
         </div>
       </main>

@@ -46,6 +46,7 @@ model Photo {
   tripId    String
   trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
   url       String   
+  notes     String?
   createdAt DateTime @default(now())
   coverOf   Trip?    @relation("CoverPhoto")
 }

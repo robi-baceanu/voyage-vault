@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     }
 
     // Parse and validate input
-    const { title, startDate, endDate, notes, latitude, longitude } = await request.json();
+    const { title, startDate, endDate, notes } = await request.json();
     if (!title || !startDate || !endDate) {
         return NextResponse.json(
         { error: "Missing required fields: title and date" },
@@ -52,8 +52,6 @@ export async function POST(request: Request) {
         startDate:      new Date(startDate),
         endDate:        new Date(endDate),
         notes:     notes     ?? null,
-        latitude:  latitude  ?? null,
-        longitude: longitude ?? null,
         },
     });
 
