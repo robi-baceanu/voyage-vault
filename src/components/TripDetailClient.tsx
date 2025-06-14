@@ -36,6 +36,20 @@ export default function TripDetailClient({ trip }: Props) {
      { ssr: false }
   );
 
+  // Remove photo as cover
+  const handleRemoveCover = async () => {
+    const res = await fetch(`/api/trips/${trip.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverPhotoId: null }),
+    });
+    if (res.ok) {
+      router.refresh();
+    } else {
+      alert("Failed to remove cover");
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -46,13 +60,23 @@ export default function TripDetailClient({ trip }: Props) {
             {trip.title}
           </h1>
           {/* Cover photo banner or placeholder */}
-          <div className="mb-4 w-full h-64 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+          <div className="mb-4 w-full h-64 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center relative group">
             {trip.coverPhotoUrl ? (
-              <img
-                src={trip.coverPhotoUrl}
-                alt="Cover"
-                className="object-cover w-full h-full"
-              />
+              <>
+                <img
+                  src={trip.coverPhotoUrl}
+                  alt="Cover"
+                  className="object-cover w-full h-full"
+                />
+                {/* Remove cover button - appears on hover */}
+                <button
+                  onClick={handleRemoveCover}
+                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Remove cover"
+                >
+                  Remove cover
+                </button>
+              </>
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

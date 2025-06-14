@@ -16,7 +16,7 @@ interface PhotoSectionProps {
   coverPhotoId?: string | null;
 }
 
-export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps) {
+export default function PhotoSection({ tripId }: PhotoSectionProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,20 +66,6 @@ export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps
     }
   };
 
-  // Remove photo as cover
-  const handleRemoveCover = async () => {
-    const res = await fetch(`/api/trips/${tripId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coverPhotoId: null }),
-    });
-    if (res.ok) {
-      fetchPhotos();
-    } else {
-      alert("Failed to remove cover");
-    }
-  };
-
   // Open lightbox at specific index
   const openLightbox = (index: number) => {
     setCurrentIndex(index);
@@ -97,14 +83,6 @@ export default function PhotoSection({ tripId, coverPhotoId }: PhotoSectionProps
       {/* Uploader */}
       <div className="mb-4 flex justify-between items-center">
         <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
-        {coverPhotoId && (
-          <button
-            onClick={handleRemoveCover}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded mb-2"
-          >
-            Remove cover
-          </button>
-        )}
       </div>
 
       {/* Loading & Error States */}
