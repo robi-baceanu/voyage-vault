@@ -507,7 +507,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
   return (
     <div className="mt-2">
       {/* Search box */}
-      <form onSubmit={handleSearch} className="flex mb-2 space-x-2">
+      <form onSubmit={handleSearch} className="flex mb-6 space-x-2">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -517,7 +517,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
         <button
           type="submit"
           disabled={loading}
-          className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:bg-gray-400"
+          className="px-3 py-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:bg-gray-400"
         >
           {loading ? "Searching…" : "Search"}
         </button>
@@ -538,7 +538,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
       </MapContainer>
 
       {/* Controls under the map */}
-      <div className="mt-2 flex justify-between items-center">
+      <div className="mt-5 flex justify-between items-center">
         {/* Saved locations counter */}
         <div>
           {savedLocations.length > 0 && (

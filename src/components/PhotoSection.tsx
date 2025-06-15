@@ -81,14 +81,14 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
       {error && <p className="text-red-600">{error}</p>}
 
       {/* Photo Grid */}
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
         {photos.map((photo, index) => (
           <div key={photo.id} className="relative group">
             <img
               src={photo.url}
               alt="Trip photo"
               onClick={() => openLightbox(index)}
-              className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+              className="w-full h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
             />
             {/* Set as cover button, appears on hover */}
             <button
