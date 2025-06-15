@@ -75,11 +75,7 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
   const closeLightbox = () => setLightboxOpen(false);
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        Photos
-      </h2>
-
+    <div className="mt-2">
       {/* Uploader */}
       <div className="mb-4 flex justify-between items-center">
         <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
@@ -90,7 +86,7 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
       {error && <p className="text-red-600">{error}</p>}
 
       {/* Photo Grid */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         {photos.map((photo, index) => (
           <div key={photo.id} className="relative group">
             <img

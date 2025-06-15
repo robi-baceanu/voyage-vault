@@ -505,11 +505,7 @@ export default function MapSection({ tripId, initialLat, initialLng }: MapSectio
   }
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-        Location
-      </h2>
-
+    <div className="mt-2">
       {/* Search box */}
       <form onSubmit={handleSearch} className="flex mb-2 space-x-2">
         <input
