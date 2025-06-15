@@ -48,23 +48,16 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
 
   // Handle trip deletion
   async function handleDelete() {
-    if (!confirm("Delete this trip?")) return;
-  
+    if (!confirm("Are you sure you want to delete this trip?")) return;
+
     const res = await fetch(`/api/trips/${trip.id}`, {
       method: "DELETE",
     });
-  
+
     if (res.ok) {
-      // Force a full page reload to /trips, avoiding any cache/stale‐data
       window.location.href = "/trips";
     } else {
-      // Try parse an error message, fallback gracefully
-      let msg = "Delete failed";
-      try {
-        const body = await res.json();
-        if (body.error) msg = body.error;
-      } catch {}
-      alert(msg);
+      alert("Failed to delete trip");
     }
   }
 
@@ -117,7 +110,13 @@ export default function EditTripModal({ trip, onSave }: EditTripModalProps) {
 
       {/* Edit Modal */}
       {open && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center">
+          {/* Backdrop with blur effect */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          
           <div className="relative z-[2001] bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Trip</h2>
             {error && <p className="mb-2 text-red-600">{error}</p>}

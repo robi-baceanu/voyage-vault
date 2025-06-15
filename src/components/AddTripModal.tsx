@@ -43,9 +43,9 @@ export default function AddTripModal() {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-30 flex items-center justify-center">
-          {/* Backdrop */}
+          {/* Backdrop with blur effect */}
           <div
-            className="absolute inset-0 bg-black opacity-50"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
 
