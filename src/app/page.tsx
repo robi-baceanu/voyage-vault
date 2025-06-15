@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 const HomeMapSection = dynamic(() => import("../components/HomeMapSection"), {
   ssr: false,
   loading: () => (
-    <div className="h-96 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+    <div className="h-90 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
       <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
     </div>
   ),
