@@ -33,7 +33,7 @@ export default async function TripsPage() {
 
       {/* Page content */}
       <main className="pt-20 min-h-screen bg-white dark:bg-gray-900 p-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-4 mb-6">
           Your Trips
         </h1>
 
