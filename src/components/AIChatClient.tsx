@@ -16,6 +16,7 @@ export default function AIChatClient() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showTripPlanner, setShowTripPlanner] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   // Load persisted chat history on mount
@@ -72,28 +73,66 @@ export default function AIChatClient() {
     }
   };
 
+  const handleClearConversation = async () => {
+    if (!confirm("Are you sure you want to clear the entire conversation? This action cannot be undone.")) {
+      return;
+    }
+
+    setClearing(true);
+    try {
+      const res = await fetch("/api/ai", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to clear conversation");
+      }
+
+      // Clear messages from UI
+      setMessages([]);
+    } catch (err: unknown) {
+      console.error("Clear conversation error:", err);
+      alert("Failed to clear conversation. Please try again.");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   const handleTripPlanSubmit = (message: string) => {
     handleSend(message);
   };
 
   return (
     <>
-      <div className="flex flex-col h-[70vh] max-h-[800px] bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        {/* Header with Trip Planner Button */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col h-[90vh] max-h-[800px] bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        {/* Header with Trip Planner and Clear Conversation Buttons */}
+        <div className="p-4 border-b border-gray-200 dark:border-gray-600 bg-blue-400 dark:bg-blue-800 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-2xl font-semibold text-grey-900 dark:text-gray-100">
               AI Travel Assistant
             </h2>
-            <button
-              onClick={() => setShowTripPlanner(true)}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-colors flex items-center space-x-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              <span>Plan a trip now!</span>
-            </button>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowTripPlanner(true)}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-colors flex items-center space-x-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <span>Plan a trip now!</span>
+              </button>
+              <button
+                onClick={handleClearConversation}
+                disabled={clearing || messages.length === 0}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors flex items-center space-x-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>{clearing ? "Clearing..." : "Clear conversation"}</span>
+              </button>
+            </div>
           </div>
         </div>
 

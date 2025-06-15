@@ -87,3 +87,23 @@ export async function GET() {
 
   return NextResponse.json(history);
 }
+
+export async function DELETE() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Delete all chat messages for the current user
+    await prisma.chatMessage.deleteMany({
+      where: { userId: session.user.id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err: unknown) {
+    console.error("DELETE /api/ai error:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
