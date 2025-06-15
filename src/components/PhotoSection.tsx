@@ -75,12 +75,7 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
   const closeLightbox = () => setLightboxOpen(false);
 
   return (
-    <div className="mt-2">
-      {/* Uploader */}
-      <div className="mb-4 flex justify-between items-center">
-        <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
-      </div>
-
+    <div>
       {/* Loading & Error States */}
       {loading && <p className="text-gray-700 dark:text-gray-300">Loading photos…</p>}
       {error && <p className="text-red-600">{error}</p>}
@@ -141,6 +136,11 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
           onClose={closeLightbox}
         />
       )}
+
+      {/* Pass the upload success handler to parent */}
+      <div className="hidden">
+        <PhotoUploader tripId={tripId} onUploadSuccess={handleUploadSuccess} />
+      </div>
     </div>
   );
 }

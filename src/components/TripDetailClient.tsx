@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import NavBar from "@/components/NavBar";
 import EditTripModal from "@/components/EditTripModal";
 import PhotoSection from "@/components/PhotoSection";
+import PhotoUploader from "@/components/PhotoUploader";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 interface Trip {
   id: string;
@@ -22,6 +24,7 @@ interface Props {
 
 export default function TripDetailClient({ trip }: Props) {
   const router = useRouter();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const tripForEdit = {
     id: trip.id,
@@ -48,6 +51,12 @@ export default function TripDetailClient({ trip }: Props) {
     } else {
       alert("Failed to remove cover");
     }
+  };
+
+  // Handle photo upload success
+  const handlePhotoUploadSuccess = () => {
+    // Trigger a re-render of the photo section
+    setRefreshKey(prev => prev + 1);
   };
 
   return (
@@ -159,22 +168,31 @@ export default function TripDetailClient({ trip }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Photo Gallery Card */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center min-h-[72px]">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   Photos
                 </h2>
+                {/* Add Photos button in header */}
+                <PhotoUploader 
+                  tripId={trip.id} 
+                  onUploadSuccess={handlePhotoUploadSuccess} 
+                />
               </div>
               <div className="p-4">
-                <PhotoSection tripId={trip.id} coverPhotoId={trip.coverPhotoId ?? null} />
+                <PhotoSection 
+                  key={refreshKey} 
+                  tripId={trip.id} 
+                  coverPhotoId={trip.coverPhotoId ?? null} 
+                />
               </div>
             </div>
 
             {/* Map Card */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center min-h-[72px]">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -182,6 +200,8 @@ export default function TripDetailClient({ trip }: Props) {
                   </svg>
                   Locations
                 </h2>
+                {/* Empty div to maintain layout balance */}
+                <div></div>
               </div>
               <div className="p-4">
                 <MapSection tripId={trip.id} />
