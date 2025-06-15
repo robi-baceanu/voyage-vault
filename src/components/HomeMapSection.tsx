@@ -122,7 +122,7 @@ export default function HomeMapSection() {
   else if (maxSpread > 0.1) zoom = 9;
 
   return (
-    <div className="h-96 rounded-lg overflow-hidden">
+    <div className="h-90 rounded-lg overflow-hidden">
       <MapContainer
         center={[centerLat, centerLng]}
         zoom={zoom}

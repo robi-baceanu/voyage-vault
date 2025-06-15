@@ -279,7 +279,7 @@ function AuthenticatedHomePage({
 
         <div className="container mx-auto px-4 py-8">
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column - Stats and Recent Trips */}
+            {/* Left Column - Stats and Quick Tips */}
             <div className="lg:col-span-1 space-y-6">
               {/* Travel Statistics */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -309,73 +309,6 @@ function AuthenticatedHomePage({
                   </div>
                 ) : (
                   <p className="text-gray-500 dark:text-gray-400">No trip data available</p>
-                )}
-              </div>
-
-              {/* Recent Trips */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                    Recent Trips
-                  </h2>
-                  <Link
-                    href="/trips"
-                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm font-medium"
-                  >
-                    View all
-                  </Link>
-                </div>
-                {loadingStats ? (
-                  <div className="space-y-3">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="animate-pulse h-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                    ))}
-                  </div>
-                ) : tripStats?.recentTrips.length ? (
-                  <div className="space-y-3">
-                    {tripStats.recentTrips.map((trip) => (
-                      <Link
-                        key={trip.id}
-                        href={`/trips/${trip.id}`}
-                        className="block p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          {trip.coverPhoto ? (
-                            <img
-                              src={trip.coverPhoto}
-                              alt={trip.title}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">
-                              <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              </svg>
-                            </div>
-                          )}
-                          <div className="flex-1">
-                            <h3 className="font-medium text-gray-900 dark:text-gray-100">{trip.title}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-6">
-                    <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    <p className="text-gray-500 dark:text-gray-400 mb-3">No trips yet</p>
-                    <Link
-                      href="/trips"
-                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium"
-                    >
-                      Create your first trip
-                    </Link>
-                  </div>
                 )}
               </div>
 
@@ -429,6 +362,75 @@ function AuthenticatedHomePage({
                 </div>
                 <HomeMapSection />
               </div>
+            </div>
+          </div>
+
+          {/* Recent Trips - Full Width Below Map */}
+          <div className="mt-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  Recent Trips
+                </h2>
+                <Link
+                  href="/trips"
+                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm font-medium"
+                >
+                  View all
+                </Link>
+              </div>
+              {loadingStats ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="animate-pulse h-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  ))}
+                </div>
+              ) : tripStats?.recentTrips.length ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {tripStats.recentTrips.map((trip) => (
+                    <Link
+                      key={trip.id}
+                      href={`/trips/${trip.id}`}
+                      className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <div className="flex items-center space-x-4">
+                        {trip.coverPhoto ? (
+                          <img
+                            src={trip.coverPhoto}
+                            alt={trip.title}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                            <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900 dark:text-gray-100 truncate">{trip.title}</h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">No trips yet</p>
+                  <Link
+                    href="/trips"
+                    className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    Create your first trip
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
