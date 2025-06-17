@@ -39,9 +39,7 @@ const INTEREST_OPTIONS = [
   'Music & Concerts',
   'Family Activities',
   'Wellness & Spa',
-  'Street Markets',
-  'Local Transportation',
-  'Hidden Gems'
+  'Street Markets'
 ];
 
 export default function TripPlannerModal({ isOpen, onClose, onSubmit }: TripPlannerModalProps) {
@@ -69,10 +67,10 @@ export default function TripPlannerModal({ isOpen, onClose, onSubmit }: TripPlan
       newErrors.destination = 'Destination is required';
     }
     if (!formData.startDate) {
-      newErrors.startDate = null; // We'll handle this differently
+      newErrors.startDate = null;
     }
     if (!formData.endDate) {
-      newErrors.endDate = null; // We'll handle this differently
+      newErrors.endDate = null;
     }
     if (!formData.budget.trim() || isNaN(Number(formData.budget))) {
       newErrors.budget = 'Valid budget amount is required';
