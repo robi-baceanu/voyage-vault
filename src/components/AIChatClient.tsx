@@ -122,16 +122,6 @@ export default function AIChatClient() {
                 </svg>
                 <span>Plan a trip now!</span>
               </button>
-              <button
-                onClick={handleClearConversation}
-                disabled={clearing || messages.length === 0}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors flex items-center space-x-2"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <span>{clearing ? "Clearing..." : "Clear conversation"}</span>
-              </button>
             </div>
           </div>
         </div>
@@ -198,6 +188,20 @@ export default function AIChatClient() {
             {sending ? "…" : "Send"}
           </button>
         </div>
+      </div>
+
+      {/* Clear Conversation Button */}
+      <div className="mt-4 items-end flex justify-end space-x-2">
+        <button
+          onClick={handleClearConversation}
+          disabled={clearing || messages.length === 0}
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors flex items-center space-x-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          <span>{clearing ? "Clearing..." : "Clear conversation"}</span>
+        </button>
       </div>
 
       {/* Trip Planner Modal */}
