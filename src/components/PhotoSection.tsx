@@ -90,14 +90,14 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
               onClick={() => openLightbox(index)}
               className="w-full h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
             />
-            {/* Set as cover button, appears on hover */}
+            {/* Set as cover button, visible on mobile, hover on desktop */}
             <button
               onClick={() => handleSetCover(photo.id)}
-              className="absolute top-2 left-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 left-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             >
               Set as cover
             </button>
-            {/* Delete photo button */}
+            {/* Delete photo button, visible on mobile, hover on desktop */}
             <button
               onClick={async () => {
                 if (confirm("Delete this photo?")) {
@@ -106,7 +106,7 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
                   else alert("Failed to delete photo");
                 }
               }}
-              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             >
               {/* Trash icon */}  
               <svg
