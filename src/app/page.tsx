@@ -112,7 +112,7 @@ function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signin"
+                href="/auth/signup"
                 className="px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors"
               >
                 Start Your Journey
@@ -213,7 +213,7 @@ function LandingPage() {
               Join thousands of travelers who trust Voyage Vault to document and plan their adventures.
             </p>
             <Link
-              href="/auth/signin"
+              href="/auth/signup"
               className="inline-block px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors"
             >
               Get Started for Free
