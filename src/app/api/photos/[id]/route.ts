@@ -7,14 +7,14 @@ const prisma = new PrismaClient();
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const photoId = params.id;
+  const { id: photoId } = await params;
 
   // Verify ownership: fetch the photo + its trip.userId
   const photo = await prisma.photo.findUnique({
@@ -33,14 +33,14 @@ export async function DELETE(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const photoId = params.id;
+  const { id: photoId } = await params;
   const { notes } = await request.json();
 
   // Verify ownership: fetch the photo + its trip.userId
