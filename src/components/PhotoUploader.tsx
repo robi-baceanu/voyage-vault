@@ -6,6 +6,7 @@ interface Photo {
   id: string;
   url: string;
   createdAt: string;
+  notes?: string | null;
 }
 
 interface PhotoUploaderProps {
@@ -25,44 +26,35 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
     setUploading(true);
 
     try {
-      // Read file as Data URL
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const dataUrl = reader.result;
-        if (typeof dataUrl !== "string") throw new Error("Failed to read file");
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('tripId', tripId);
 
-        // Send to API
-        const res = await fetch("/api/photos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tripId, url: dataUrl }),
-        });
+      // Send to new upload API
+      const res = await fetch("/api/photos/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Upload failed");
-        }
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
+      }
 
-        const photo: Photo = await res.json();
-        onUploadSuccess(photo);
-      };
-
-      reader.onerror = () => {
-        throw new Error("File reading error");
-      };
+      const photo: Photo = await res.json();
+      onUploadSuccess(photo);
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "An unexpected error occurred";
-        setError(message);
+      const message = err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(message);
     } finally {
-        setUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = "";
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
   return (
     <div>
-      {/* Hidden file input */}
       <input
         type="file"
         accept="image/*"
@@ -71,18 +63,15 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
         className="hidden"
       />
 
-      {/* Styled button to trigger file input */}
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+        disabled={uploading}
+        className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded"
       >
-        Add photos
+        {uploading ? "Uploading..." : "Add photos"}
       </button>
       
-      {uploading && (
-        <p className="mt-2 text-gray-700 dark:text-gray-300">Uploading…</p>
-      )}
       {error && <p className="mt-2 text-red-600">{error}</p>}
     </div>
   );
