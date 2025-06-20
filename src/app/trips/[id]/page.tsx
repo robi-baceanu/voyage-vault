@@ -1,6 +1,6 @@
 import TripDetailClient from "@/components/TripDetailClient";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
 

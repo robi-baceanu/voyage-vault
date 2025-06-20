@@ -1,7 +1,7 @@
 import NavBar from "@/components/NavBar";
 import ProfileForm from "@/components/ProfileForm";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 

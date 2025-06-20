@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
@@ -18,7 +18,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { title, startDate, endDate, notes, latitude, longitude, coverPhotoId } = body;
+  const { title, startDate, endDate, notes, coverPhotoId } = body;
 
   // Verify ownership
   const existing = await prisma.trip.findUnique({
@@ -35,8 +35,6 @@ export async function PATCH(
   if (startDate   !== undefined) data.startDate = new Date(startDate);
   if (endDate     !== undefined) data.endDate      = new Date(endDate);
   if (notes       !== undefined) data.notes     = notes;
-  if (latitude    !== undefined) data.latitude  = latitude;
-  if (longitude   !== undefined) data.longitude = longitude;
   if (coverPhotoId !== undefined) data.coverPhotoId = coverPhotoId;
 
   if (Object.keys(data).length === 0) {
