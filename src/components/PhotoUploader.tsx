@@ -26,6 +26,8 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
     setUploading(true);
 
     try {
+      console.log("Starting upload for file:", file.name);
+
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('file', file);
@@ -37,14 +39,30 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
         body: formData,
       });
 
+      console.log("Response status:", res.status);
+      console.log("Response headers:", res.headers.get('content-type'));
+
+      // Get response text first to debug
+      const responseText = await res.text();
+      console.log("Response text:", responseText);
+
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Upload failed");
+        // Try to parse as JSON, fallback to text
+        let errorMessage = "Upload failed";
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = responseText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      const photo: Photo = await res.json();
+      // Parse successful response
+      const photo: Photo = JSON.parse(responseText);
       onUploadSuccess(photo);
     } catch (err: unknown) {
+      console.error("Upload error:", err);
       const message = err instanceof Error ? err.message : "An unexpected error occurred";
       setError(message);
     } finally {
@@ -72,7 +90,11 @@ export default function PhotoUploader({ tripId, onUploadSuccess }: PhotoUploader
         {uploading ? "Uploading..." : "Add photos"}
       </button>
       
-      {error && <p className="mt-2 text-red-600">{error}</p>}
+      {error && (
+        <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
     </div>
   );
 }
