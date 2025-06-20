@@ -59,6 +59,11 @@ export default function TripDetailClient({ trip }: Props) {
     setRefreshKey(prev => prev + 1);
   };
 
+  // Handle cover change
+  const handleCoverChange = () => {
+    router.refresh();
+  };
+
   return (
     <>
       <NavBar />
@@ -186,6 +191,7 @@ export default function TripDetailClient({ trip }: Props) {
                   key={refreshKey} 
                   tripId={trip.id} 
                   coverPhotoId={trip.coverPhotoId ?? null} 
+                  onCoverChange={handleCoverChange}
                 />
               </div>
             </div>

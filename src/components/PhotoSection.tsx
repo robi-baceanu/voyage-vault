@@ -14,9 +14,10 @@ interface Photo {
 interface PhotoSectionProps {
   tripId: string;
   coverPhotoId?: string | null;
+  onCoverChange?: () => void;
 }
 
-export default function PhotoSection({ tripId }: PhotoSectionProps) {
+export default function PhotoSection({ tripId, onCoverChange }: PhotoSectionProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +62,10 @@ export default function PhotoSection({ tripId }: PhotoSectionProps) {
     });
     if (res.ok) {
       fetchPhotos();
+      // Call the callback to refresh the parent component
+      if (onCoverChange) {
+        onCoverChange();
+      }
     } else {
       alert("Failed to set cover");
     }
